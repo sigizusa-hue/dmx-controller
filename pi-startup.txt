@@ -1,0 +1,14 @@
+# DMX Controller - Pi Startup Steps
+# Run these in order after every reboot
+
+# 1. Unload kernel driver so pyftdi can claim the FTDI device
+sudo rmmod ftdi_sio usbserial
+
+# 2. Install pyftdi (only needed once, but safe to re-run)
+pip install pyftdi --break-system-packages
+
+# 3. Pull latest code
+cd ~/dmx-controller && git pull
+
+# 4. Run
+python main.py
