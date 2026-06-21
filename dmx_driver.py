@@ -49,7 +49,7 @@ class DmxDriver:
         self._ftdi.set_line_property(8, 2, "N")
         self._ftdi.set_flowctrl("")
         # Assert RTS and DTR - required on some FTDI devices to enable TX
-        self._ftdi.set_rts(True)
+        self._ftdi.set_rts(False)
         self._ftdi.set_dtr(True)
         self._ftdi.set_baudrate(DMX_BAUD)
         # Purge buffers
