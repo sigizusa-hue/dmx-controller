@@ -43,9 +43,19 @@ class DmxDriver:
 
     def _open_device(self):
         self._ftdi.open_from_url(self._url)
+        # Reset the chip to clear any previous state
+        self._ftdi.reset()
+        time.sleep(0.05)
         self._ftdi.set_line_property(8, 2, "N")
         self._ftdi.set_flowctrl("")
+        # Assert RTS and DTR - required on some FTDI devices to enable TX
+        self._ftdi.set_rts(True)
+        self._ftdi.set_dtr(True)
         self._ftdi.set_baudrate(DMX_BAUD)
+        # Purge buffers
+        self._ftdi.purge_buffers()
+        time.sleep(0.05)
+        print("[DMX] Device opened and reset.")
 
     def _send_break(self):
         self._ftdi.set_baudrate(BREAK_BAUD)
