@@ -1,3 +1,4 @@
+ls *.py data/
 # DMX Controller - Pi Startup Steps
 # Run these in order after every reboot
 
@@ -12,3 +13,5 @@ cd ~/dmx-controller && git pull
 
 # 4. Run
 python main.py
+
+python main_engine.py

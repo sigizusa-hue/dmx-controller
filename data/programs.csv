@@ -3,6 +3,8 @@ program1,1,1,255
 program1,1,2,0
 program1,2,1,0
 program1,2,2,255
+program1,3,3,255
+program1,3,4,255
 program2,1,1,128
 program2,1,2,128
 program2,2,1,255
