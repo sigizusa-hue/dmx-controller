@@ -54,7 +54,8 @@ TODO: set up SSH key auth on Pi, make repo private
 - Full feedback loop: scope -> Claude sees it -> fixes code -> push -> pull
 
 ## Milestone 2 - TODO
-- [ ] Confirm ch1=255 drives dimmer to full brightness
+- [x] Confirm ch1=255 drives dimmer to full brightness
+- [x] blink.py: ch1 toggles 0/255 at 2Hz, dimmer LED visibly blinks
 - [ ] Mock driver (logs instead of USB, for Codespace testing)
 - [ ] Controller layer (scenes, sequences)
 - [ ] Flask remote-monitoring dashboard
