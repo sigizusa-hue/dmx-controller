@@ -1,2 +1,2 @@
-step_duration=1 
+step_duration=1
 offset=0
