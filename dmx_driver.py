@@ -43,19 +43,31 @@ class DmxDriver:
 
     def _open_device(self):
         self._ftdi.open_from_url(self._url)
-        # Reset the chip to clear any previous state
         self._ftdi.reset()
         time.sleep(0.05)
         self._ftdi.set_line_property(8, 2, "N")
         self._ftdi.set_flowctrl("")
-        # Assert RTS and DTR - required on some FTDI devices to enable TX
         self._ftdi.set_rts(False)
-        self._ftdi.set_dtr(True)
+        self._ftdi.set_dtr(False)
         self._ftdi.set_baudrate(DMX_BAUD)
-        # Purge buffers
         self._ftdi.purge_buffers()
         time.sleep(0.05)
         print("[DMX] Device opened and reset.")
+
+    def _reopen_device(self):
+        """Attempt to recover the FTDI device after a USB error."""
+        try:
+            self._ftdi.close()
+        except Exception:
+            pass
+        time.sleep(0.2)
+        try:
+            self._open_device()
+            print("[DMX] Device recovered after error.")
+            return True
+        except Exception as e:
+            print(f"[DMX] Recovery failed: {e}")
+            return False
 
     def _send_break(self):
         self._ftdi.set_baudrate(BREAK_BAUD)
@@ -65,13 +77,25 @@ class DmxDriver:
 
     def _frame_loop(self):
         frame_count = 0
+        error_count = 0
         t_report = time.monotonic()
         while self._running:
             t_start = time.monotonic()
-            self._send_break()
-            with self._lock:
-                packet = bytes([0x00]) + bytes(self._buffer)
-            self._ftdi.write_data(packet)
+            try:
+                self._send_break()
+                with self._lock:
+                    packet = bytes([0x00]) + bytes(self._buffer)
+                self._ftdi.write_data(packet)
+                error_count = 0
+            except Exception as e:
+                error_count += 1
+                print(f"[DMX] Frame error #{error_count}: {e}")
+                if self._reopen_device():
+                    error_count = 0
+                else:
+                    time.sleep(0.5)
+                continue
+
             elapsed = time.monotonic() - t_start
             sleep_for = FRAME_INTERVAL - elapsed
             if sleep_for > 0:
