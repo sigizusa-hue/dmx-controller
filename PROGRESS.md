@@ -83,10 +83,10 @@ data/clock.txt     -> [Clock]          -> fires step events at interval
 
 ### TCP control (real-time, language-agnostic, works over WiFi)
 Send commands from any machine on the network:
-  echo "PLAY program1" | nc -w1 192.168.101.12 5555
-  echo "PLAY program2" | nc -w1 192.168.101.12 5555
-  echo "STOP"          | nc -w1 192.168.101.12 5555
-  echo "STATUS"        | nc -w1 192.168.101.12 5555
+  echo "PLAY program1" | nc -w1 192.168.1.109 5555
+  echo "PLAY program2" | nc -w1 192.168.1.109 5555
+  echo "STOP"          | nc -w1 192.168.1.109 5555
+  echo "STATUS"        | nc -w1 192.168.1.109 5555
 NOTE: use TCP not UDP. nc -u (UDP) will NOT work - server is TCP.
 Engine prints "[TCP] Command: <cmd>" on receipt. "Disconnected" after is normal.
 
@@ -95,7 +95,7 @@ A .bat on Windows SSHes into the Pi, starts a tmux session, frees the FTDI
 device, pulls latest code, and runs the engine. Keep 'pause' at the end so the
 window stays open. Straight ssh -t works better than routing through PowerShell.
   @echo off
-  ssh -t p4@192.168.101.12 "tmux kill-session -t dmx 2>/dev/null; tmux new-session -d -s dmx -c /home/p4/dmx-controller; tmux send-keys -t dmx:0.0 'sudo rmmod ftdi_sio usbserial 2>/dev/null; git pull && python main_engine.py' C-m; tmux attach -t dmx"
+  ssh -t p4@192.168.1.109 "tmux kill-session -t dmx 2>/dev/null; tmux new-session -d -s dmx -c /home/p4/dmx-controller; tmux send-keys -t dmx:0.0 'sudo rmmod ftdi_sio usbserial 2>/dev/null; git pull && python main_engine.py' C-m; tmux attach -t dmx"
   pause
 TODO: SSH key auth so no password prompt each time.
 
